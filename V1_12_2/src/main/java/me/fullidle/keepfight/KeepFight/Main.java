@@ -3,6 +3,7 @@ package me.fullidle.keepfight.KeepFight;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
+import com.pixelmonmod.pixelmon.battles.controller.log.BattleActionBase;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -36,13 +37,18 @@ public class Main extends JavaPlugin implements CommandExecutor {
                             wrapper.update();
                         }
                     }
+                    BattleActionBase[] base = battle.battleLog.getAllActions().toArray(new BattleActionBase[0]);
+                    battle.battleLog.getAllActions().clear();
+                    for (BattleActionBase action : base) {
+                        battle.battleLog.addEvent(action);
+                    }
                     battle.updatePokemonHealth();
                     battle.update();
                 }
                 battle.pauseBattle();
                 battle.endPause();
                 battle.sendToAll(getMsg(getConfig().getString("Msg.KeepFightCmdMsg")));
-            }else{
+        }else{
                 sender.sendMessage(getMsg(getConfig().getString("Msg.NotInToBattle")));
             }
             return false;

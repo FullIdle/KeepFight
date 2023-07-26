@@ -3,6 +3,7 @@ package me.fullidle.keepfight.KeepFight;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.BattleController;
+import com.pixelmonmod.pixelmon.battles.controller.log.action.BattleAction;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -35,6 +36,11 @@ public class Main extends JavaPlugin implements CommandExecutor {
                         for (PixelmonWrapper wrapper : participant.allPokemon) {
                             wrapper.update();
                         }
+                    }
+                    BattleAction[] base = battle.battleLog.getAllActions().toArray(new BattleAction[0]);
+                    battle.battleLog.getAllActions().clear();
+                    for (BattleAction action : base) {
+                        battle.battleLog.logEvent(action);
                     }
                     battle.updatePokemonHealth();
                     battle.update();
