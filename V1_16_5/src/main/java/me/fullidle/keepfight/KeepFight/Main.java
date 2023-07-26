@@ -27,25 +27,24 @@ public class Main extends JavaPlugin implements CommandExecutor {
             ServerPlayerEntity player = StorageProxy.getParty(p.getUniqueId()).getPlayer();
             BattleController battle = BattleRegistry.getBattle(player);
             if (battle != null) {
+                battle.pauseBattle();
+                battle.endPause();
                 if (!getConfig().getBoolean("简约模式")){
                     for (BattleParticipant participant : battle.participants) {
+                        participant.updateOtherPokemon();
                         for (PixelmonWrapper wrapper : participant.allPokemon) {
                             wrapper.update();
-                            participant.updatePokemon(wrapper);
                         }
-                        participant.updateOtherPokemon();
                     }
-                    battle.update();
                     battle.updatePokemonHealth();
+                    battle.update();
                 }
                 battle.pauseBattle();
                 battle.endPause();
                 battle.sendToAll(getMsg(getConfig().getString("Msg.KeepFightCmdMsg")));
             }else{
                 sender.sendMessage(getMsg(getConfig().getString("Msg.NotInToBattle")));
-                return false;
             }
-            sender.sendMessage(getMsg(getConfig().getString("Msg.KeepFightCmdMsg")));
             return false;
         }
         sender.sendMessage(getMsg(getConfig().getString("Msg.NoPlayer")));
