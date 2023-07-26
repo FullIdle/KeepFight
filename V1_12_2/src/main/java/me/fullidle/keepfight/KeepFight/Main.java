@@ -1,0 +1,58 @@
+package me.fullidle.keepfight.KeepFight;
+
+import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.battles.BattleRegistry;
+import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
+import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
+import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
+import net.minecraft.entity.player.EntityPlayerMP;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class Main extends JavaPlugin implements CommandExecutor {
+    @Override
+    public void onEnable() {
+        saveDefaultConfig();
+        getCommand("keepfight").setExecutor(this::onCommand);
+        getLogger().info("§3插件已载入");
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (sender instanceof Player) {
+            Player p = (Player) sender;
+            EntityPlayerMP player = Pixelmon.storageManager.getParty(p.getUniqueId()).getPlayer();
+            BattleControllerBase battle = BattleRegistry.getBattle(player);
+            if (battle != null) {
+                if (!getConfig().getBoolean("简约模式")){
+                    for (BattleParticipant participant : battle.participants) {
+                        for (PixelmonWrapper wrapper : participant.allPokemon) {
+                            wrapper.update();
+                            participant.updatePokemon(wrapper);
+                        }
+                        participant.updateOtherPokemon();
+                    }
+                    battle.update();
+                    battle.updatePokemonHealth();
+                }
+                battle.pauseBattle();
+                battle.endPause();
+                battle.sendToAll(getMsg(getConfig().getString("Msg.KeepFightCmdMsg")));
+            }else{
+                sender.sendMessage(getMsg(getConfig().getString("Msg.NotInToBattle")));
+                return false;
+            }
+            sender.sendMessage(getMsg(getConfig().getString("Msg.KeepFightCmdMsg")));
+            return false;
+        }
+        sender.sendMessage(getMsg(getConfig().getString("Msg.NoPlayer")));
+        return false;
+    }
+
+    public String getMsg(String str){
+        return str.replace("&","§");
+    }
+}
