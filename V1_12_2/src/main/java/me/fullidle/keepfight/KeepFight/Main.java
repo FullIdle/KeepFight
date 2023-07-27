@@ -6,12 +6,20 @@ import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
 import com.pixelmonmod.pixelmon.battles.controller.log.BattleActionBase;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
+import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
+import com.pixelmonmod.pixelmon.comm.packetHandlers.battles.BackToMainMenu;
+import com.pixelmonmod.pixelmon.enums.battle.EnumBattleEndCause;
+import com.pixelmonmod.pixelmon.util.network.BetterNetworkWrapper;
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main extends JavaPlugin implements CommandExecutor {
     @Override
@@ -30,24 +38,37 @@ public class Main extends JavaPlugin implements CommandExecutor {
             if (battle != null) {
                 battle.pauseBattle();
                 battle.endPause();
-                if (!getConfig().getBoolean("简约模式")){
-                    for (BattleParticipant participant : battle.participants) {
-                        participant.updateOtherPokemon();
-                        for (PixelmonWrapper wrapper : participant.allPokemon) {
-                            wrapper.update();
+                battle.sendToAll(getMsg(getConfig().getString("Msg.KeepFightCmdMsg")));
+                switch (getConfig().getString("模式")){
+                    case "SIMPLE":{
+                        break;
+                    }
+                    case "UPDATE":{
+                        for (BattleParticipant participant : battle.participants) {
+                            participant.updateOtherPokemon();
+                            for (PixelmonWrapper wrapper : participant.allPokemon) {
+                                wrapper.update();
+                                wrapper.updateHPIncrease();
+                            }
                         }
+                        BattleActionBase[] base = battle.battleLog.getAllActions().toArray(new BattleActionBase[0]);
+                        battle.battleLog.getAllActions().clear();
+                        for (BattleActionBase action : base) {
+                            battle.battleLog.addEvent(action);
+                        }
+                        battle.updatePokemonHealth();
+                        battle.update();
+                        break;
                     }
-                    BattleActionBase[] base = battle.battleLog.getAllActions().toArray(new BattleActionBase[0]);
-                    battle.battleLog.getAllActions().clear();
-                    for (BattleActionBase action : base) {
-                        battle.battleLog.addEvent(action);
+                    case "INTERFACE":{
+                        ArrayList<PixelmonWrapper> allPoke = battle.getTeamPokemon(battle.getParticipantForEntity(player));
+                        List<PixelmonWrapper> collect = allPoke.stream().filter(s -> s.getHealth() >= 1).collect(Collectors.toList());
+                        Pixelmon.network.sendTo(new BackToMainMenu(true,true, (ArrayList<PixelmonWrapper>) collect),player);
+                        break;
                     }
-                    battle.updatePokemonHealth();
-                    battle.update();
                 }
                 battle.pauseBattle();
                 battle.endPause();
-                battle.sendToAll(getMsg(getConfig().getString("Msg.KeepFightCmdMsg")));
         }else{
                 sender.sendMessage(getMsg(getConfig().getString("Msg.NotInToBattle")));
             }
