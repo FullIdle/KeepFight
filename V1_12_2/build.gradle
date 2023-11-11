@@ -1,16 +1,7 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven { url = "https://files.minecraftforge.net/maven" }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
-    }
-}
 apply plugin: 'net.minecraftforge.gradle'
 
-group = 'me.fullidle.keepfight.KeepFight.Main'
-version = '1.2-SNAPSHOT'
+group = rootProject.group
+version = rootProject.version
 
 minecraft {
     mappings channel: 'snapshot', version: '20171003-1.12'
@@ -18,21 +9,19 @@ minecraft {
 
 repositories {
     mavenCentral()
-    mavenLocal()
 }
 
 dependencies {
-    compileOnly 'org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT'
-    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
-    compileOnly(fileTree("libs"))
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
+    compileOnly rootProject.fileTree('libs/FICore-1.0-SNAPSHOT-all.jar')
+    compileOnly fileTree('libs/Pixelmon1.12.2Server.jar')
 }
 
 test {
     useJUnitPlatform()
 }
 
-tasks.withType(JavaCompile){
+tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"
 }
 

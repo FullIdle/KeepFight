@@ -1,5 +1,0 @@
-模式: SIMPLE #SIMPLE就是第一个版本最简洁功能,UPDATE该模式就是1.1版本中的更新,INTERFACE强制打开主界面(选技能的)
-Msg:
-  KeepFightCmdMsg: '&a对战续命成功,有没有效果得自己试'
-  NoPlayer: '&c你不是玩家'
-  NotInToBattle: '&a你不在对战中'
