@@ -102,7 +102,6 @@ public class Main extends JavaPlugin implements Listener {
         if (event.getForgeEvent() instanceof BattleMessageEvent) {
             BattleMessageEvent e = (BattleMessageEvent) event.getForgeEvent();
             String text = e.textComponent.getString();
-            System.out.println(text);
             if (!text.contains("sent out")) {
                 return;
             }
