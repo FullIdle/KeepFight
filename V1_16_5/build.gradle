@@ -16,7 +16,6 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.39'
     compileOnly rootProject.fileTree('libs/FICore-1.0-SNAPSHOT-all.jar')
     compileOnly fileTree('libs/[9.1.5-Server]Pixelmon-1.16.5-9.1.5-server.jar')
-    compileOnly 'com.fullidle.fullidledev.minecraft:forge:1.16.5-36.2.39'
 }
 
 test {
