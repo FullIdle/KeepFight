@@ -3,6 +3,8 @@ main: ${group}
 version: ${version}
 description: 继续战斗
 api-version: 1.16
+depend:
+  - 'FICore'
 commands:
   keepfight:
     description: 指令

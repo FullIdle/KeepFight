@@ -2,6 +2,8 @@ name: ${rootProject.name}
 main: ${group}
 version: ${version}
 description: 继续战斗
+depend:
+  - 'FICore'
 commands:
   keepfight:
     description: 指令
