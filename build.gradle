@@ -34,8 +34,30 @@ repositories {
 }
 
 dependencies {
+    compileOnly project(path:':common')
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = [
+                    'src/main/java',
+                    'V1_12_2/src/main/java',
+                    'V1_16_5/src/main/java',
+                    'common/src/main/java'
+            ]
+        }
+        resources {
+            srcDirs = [
+                    'src/main/resources',
+                    'V1_12_2/src/main/resources',
+                    'V1_12_2/src/main/resources',
+                    'common/src/main/resources'
+            ]
+        }
+    }
 }

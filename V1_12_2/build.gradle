@@ -15,6 +15,7 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
     compileOnly rootProject.fileTree('libs/FICore-1.0-SNAPSHOT-all.jar')
     compileOnly fileTree('libs/Pixelmon1.12.2Server.jar')
+    implementation project(path:':common')
 }
 
 test {
