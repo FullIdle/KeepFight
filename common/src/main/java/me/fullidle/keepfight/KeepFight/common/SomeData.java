@@ -12,7 +12,5 @@ public class SomeData {
             "rs","eb",
             "reselect","emptyBlood"
     );
-    public static String[] help = new String[]{
-            "rs,reselect 卡稍等时用!(抓精灵除外)","eb,emptyBlood 空血卡时用"
-    };
+    public static String[] help;
 }

@@ -32,10 +32,6 @@ public class V16 implements Listener, CommandExecutor, TabCompleter {
             sender.sendMessage("§cYou cannot use this command if you are not a player!");
             return false;
         }
-        if (args.length < 1){
-            sender.sendMessage(SomeData.help);
-            return false;
-        }
         Player player = (Player) sender;
         ServerPlayerEntity fp = StorageProxy.getParty(player.getUniqueId()).getPlayer();
         BattleController battle = BattleRegistry.getBattle(fp);
@@ -44,13 +40,14 @@ public class V16 implements Listener, CommandExecutor, TabCompleter {
             return false;
         }
         PlayerParticipant pp = battle.getPlayer(fp);
+        if (args.length < 1){
+            rs(pp);
+            return false;
+        }
         switch (args[0]){
             case "rs":
             case "reselect":{
-                BackToMainMenuPacket message = new BackToMainMenuPacket(
-                        Arrays.stream(pp.allPokemon).map(pw->(pw.isAlive() && pw.entity == null)).collect(Collectors.toList()), true,
-                        Arrays.stream(pp.allPokemon).map(PixelmonWrapper::getPokemonUUID).collect(Collectors.toList()));
-                pp.sendMessage(message);
+                rs(pp);
                 break;
             }
             case "eb":
@@ -68,6 +65,14 @@ public class V16 implements Listener, CommandExecutor, TabCompleter {
         }
         return false;
     }
+
+    public static void rs(PlayerParticipant pp){
+        BackToMainMenuPacket message = new BackToMainMenuPacket(
+                Arrays.stream(pp.allPokemon).map(pw->(pw.isAlive() && pw.entity == null)).collect(Collectors.toList()), true,
+                Arrays.stream(pp.allPokemon).map(PixelmonWrapper::getPokemonUUID).collect(Collectors.toList()));
+        pp.sendMessage(message);
+    }
+
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {

@@ -35,10 +35,6 @@ public class V12 implements Listener, CommandExecutor , TabCompleter {
             sender.sendMessage("§cYou cannot use this command if you are not a player!");
             return false;
         }
-        if (args.length < 1){
-            sender.sendMessage(SomeData.help);
-            return false;
-        }
         Player player = (Player) sender;
         EntityPlayerMP fp = Pixelmon.storageManager.getParty(player.getUniqueId()).getPlayer();
         BattleControllerBase battle = BattleRegistry.getBattle(fp);
@@ -47,11 +43,14 @@ public class V12 implements Listener, CommandExecutor , TabCompleter {
             return false;
         }
         PlayerParticipant pp = battle.getPlayer(fp);
+        if (args.length < 1){
+            rs(pp);
+            return false;
+        }
         switch (args[0]){
             case "rs":
             case "reselect":{
-                BackToMainMenu message = new BackToMainMenu(true,true,new ArrayList<>(Arrays.asList(pp.allPokemon)));
-                pp.sendMessage(message);
+                rs(pp);
                 break;
             }
             case "eb":
@@ -68,6 +67,11 @@ public class V12 implements Listener, CommandExecutor , TabCompleter {
             }
         }
         return false;
+    }
+
+    public static void rs(PlayerParticipant pp){
+        BackToMainMenu message = new BackToMainMenu(true,true,new ArrayList<>(Arrays.asList(pp.allPokemon)));
+        pp.sendMessage(message);
     }
 
     @Override

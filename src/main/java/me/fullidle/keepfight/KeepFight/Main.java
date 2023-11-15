@@ -2,6 +2,7 @@ package me.fullidle.keepfight.KeepFight;
 
 import lombok.SneakyThrows;
 import me.fullidle.ficore.ficore.common.SomeMethod;
+import me.fullidle.keepfight.KeepFight.common.SomeData;
 import me.fullidle.keepfight.KeepFight.v12.V12;
 import me.fullidle.keepfight.KeepFight.v16.V16;
 import org.bukkit.command.CommandExecutor;
@@ -15,6 +16,9 @@ public class Main extends JavaPlugin {
     @SneakyThrows
     @Override
     public void onEnable() {
+        saveDefaultConfig();
+        SomeData.help = getConfig().getStringList("msg.help").toArray(new String[0]);
+
         Listener versionO = null;
         String version = SomeMethod.getMinecraftVersion();
         if (version.equals("1.12.2")){
@@ -25,17 +29,18 @@ public class Main extends JavaPlugin {
             BukkitRunnable runnable = new BukkitRunnable() {
                 @Override
                 public void run() {
-                    Main.this.getLogger().info("§c该插件不支持版本为:§3"+version+"§c的伺服器");
+                    Main.this.getLogger().info("§cThis plugin does not support servers with version §6"+version);
                     getServer().getPluginManager().disablePlugin(Main.this);
                 }
             };
             runnable.run();
             return;
         }
+
         getServer().getPluginManager().registerEvents(versionO,this);
         PluginCommand command = getCommand("keepfight");
         command.setExecutor((CommandExecutor) versionO);
         command.setTabCompleter((TabCompleter) versionO);
-        getLogger().info("插件已经载入!");
+        getLogger().info("Plugin is enabled!");
     }
 }
