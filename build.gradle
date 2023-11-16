@@ -50,10 +50,10 @@ processResources {
 }
 
 jar{
-    from("V1_12_2/build/resources/").include("**/*.*")
+    from("V1_12_2/src/main/resources/").include("**/*.*")
     from("V1_12_2/build/classes/java/main").include("**/*.*")
-    from("V1_16_5/build/resources/").include("**/*.*")
+    from("V1_16_5/src/main/resources/").include("**/*.*")
     from("V1_16_5/build/classes/java/main").include("**/*.*")
-    from("common/build/resources/").include("**/*.*")
+    from("common/src/main/resources/").include("**/*.*")
     from("common/build/classes/java/main").include("**/*.*")
 }
