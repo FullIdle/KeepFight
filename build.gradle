@@ -49,11 +49,8 @@ processResources {
     expand project.properties
 }
 
-jar{
-    from("V1_12_2/src/main/resources/").include("**/*.*")
-    from("V1_12_2/build/classes/java/main").include("**/*.*")
-    from("V1_16_5/src/main/resources/").include("**/*.*")
-    from("V1_16_5/build/classes/java/main").include("**/*.*")
-    from("common/src/main/resources/").include("**/*.*")
-    from("common/build/classes/java/main").include("**/*.*")
+jar {
+    from fileTree("common/build/libs/").include('*.jar').collect { zipTree(it) }
+    from fileTree("V1_12_2/build/libs/").include('*.jar').collect { zipTree(it) }
+    from fileTree("V1_16_5/build/libs/").include('*.jar').collect { zipTree(it) }
 }
