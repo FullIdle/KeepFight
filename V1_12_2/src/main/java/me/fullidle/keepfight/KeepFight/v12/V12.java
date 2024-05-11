@@ -47,13 +47,11 @@ public class V12 implements Listener, CommandExecutor , TabCompleter {
             rs(pp);
             return false;
         }
+        if (pp.bc.hasSpectator(pp.player)) {
+            pp.bc.sendToPlayer(pp.player,"§c你非参与者");
+            return false;
+        }
         switch (args[0]){
-            default:{
-                if (pp.bc.hasSpectator(pp.player)) {
-                    pp.bc.sendToPlayer(pp.player,"§c你非参与者");
-                    return false;
-                }
-            }
             case "rs":
             case "reselect":{
                 rs(pp);
