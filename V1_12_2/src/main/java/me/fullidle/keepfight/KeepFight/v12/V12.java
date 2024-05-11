@@ -48,6 +48,12 @@ public class V12 implements Listener, CommandExecutor , TabCompleter {
             return false;
         }
         switch (args[0]){
+            default:{
+                if (pp.bc.hasSpectator(pp.player)) {
+                    pp.bc.sendToPlayer(pp.player,"§c你非参与者");
+                    return false;
+                }
+            }
             case "rs":
             case "reselect":{
                 rs(pp);
@@ -72,6 +78,7 @@ public class V12 implements Listener, CommandExecutor , TabCompleter {
     public static void rs(PlayerParticipant pp){
         BackToMainMenu message = new BackToMainMenu(true,true,new ArrayList<>(Arrays.asList(pp.allPokemon)));
         pp.sendMessage(message);
+        pp.bc.sendToPlayer(pp.player,"§a对战续命成功,有没有效果得自己试");
     }
 
     @Override
@@ -85,11 +92,11 @@ public class V12 implements Listener, CommandExecutor , TabCompleter {
     public void onForge(ForgeEvent event){
         if (event.getForgeEvent() instanceof BattleMessageEvent) {
             BattleMessageEvent e = (BattleMessageEvent) event.getForgeEvent();
-            String text = e.textComponent.getUnformattedComponentText();
+            String text = e.textComponent.func_150261_e();
             if (!text.contains("sent out")) {
                 return;
             }
-            UUID uniqueID = e.target.getUniqueID();
+            UUID uniqueID = e.target.func_110124_au();
             if (Bukkit.getPlayer(uniqueID) == null) {
                 return;
             }

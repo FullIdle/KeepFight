@@ -1,11 +1,5 @@
-apply plugin: 'net.minecraftforge.gradle'
-
 group = rootProject.group
 version = rootProject.version
-
-minecraft {
-    mappings channel: 'snapshot', version: '20171003-1.12'
-}
 
 repositories {
     mavenCentral()
@@ -14,8 +8,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
-    compileOnly rootProject.fileTree('libs/FICore-1.0-SNAPSHOT-all.jar')
+    compileOnly 'me.forge.forgedev:ForgeDev:1.12.2'
     compileOnly 'com.pixelmonmod.pixelmon:Pixelmon:1.12.2-8.4.3'
     implementation project(path:':common')
 }

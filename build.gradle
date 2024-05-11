@@ -1,24 +1,20 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven { url = "https://files.minecraftforge.net/maven" }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
-    }
+plugins{
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'java'
 }
 
 group = 'me.fullidle.keepfight.KeepFight.Main'
-version = '1.3.3'
+version = '1.3.4'
 
 allprojects {
-    apply plugin: 'java'
+    apply plugin:'java'
     repositories {
         mavenCentral()
         mavenLocal()
         maven {url 'https://raw.github.com/FullIdle/maven-repository/main/'}
     }
     dependencies {
+        compileOnly 'me.fullidle.ficore:FICore:1.2.2'
         compileOnly 'org.spigotmc:spigot:1.16.5-R0.1-SNAPSHOT'
         compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
@@ -26,18 +22,20 @@ allprojects {
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
         compileOnly 'org.projectlombok:lombok:1.18.28'
         annotationProcessor 'org.projectlombok:lombok:1.18.28'
-        compileOnly rootProject.fileTree('libs/FICore-1.0-SNAPSHOT-all.jar')
     }
 }
 
 repositories {
     mavenCentral()
+    mavenLocal()
+    maven {url 'https://raw.github.com/FullIdle/maven-repository/main/'}
 }
 
 dependencies {
     implementation project(path:':common')
-    compileOnly fileTree(dir: 'V1_12_2/build/libs', include: '**/*.jar')
-    compileOnly fileTree(dir: 'V1_16_5/build/libs', include: '**/*.jar')
+    implementation project(path:':V1_12_2')
+    implementation project(path:':V1_16_5')
+
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -49,8 +47,11 @@ processResources {
     expand project.properties
 }
 
-jar {
-    from fileTree("common/build/libs/").include('*.jar').collect { zipTree(it) }
-    from fileTree("V1_12_2/build/libs/").include('*.jar').collect { zipTree(it) }
-    from fileTree("V1_16_5/build/libs/").include('*.jar').collect { zipTree(it) }
+shadowJar{
+    mergeServiceFiles()
+    archiveBaseName.set(this.rootProject.name)
+    archiveVersion.set(this.version as String)
+    manifest{
+        attributes 'Main-Class':this.group
+    }
 }

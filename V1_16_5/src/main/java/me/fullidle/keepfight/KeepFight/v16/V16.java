@@ -45,6 +45,12 @@ public class V16 implements Listener, CommandExecutor, TabCompleter {
             return false;
         }
         switch (args[0]){
+            default:{
+                if (pp.bc.hasSpectator(pp.player)) {
+                    pp.bc.sendToPlayer(pp.player,"§c你非参与者");
+                    return false;
+                }
+            }
             case "rs":
             case "reselect":{
                 rs(pp);
@@ -71,6 +77,7 @@ public class V16 implements Listener, CommandExecutor, TabCompleter {
                 Arrays.stream(pp.allPokemon).map(pw->(pw.isAlive() && pw.entity == null)).collect(Collectors.toList()), true,
                 Arrays.stream(pp.allPokemon).map(PixelmonWrapper::getPokemonUUID).collect(Collectors.toList()));
         pp.sendMessage(message);
+        pp.bc.sendToPlayer(pp.player,"§a对战续命成功,有没有效果得自己试");
     }
 
 
@@ -89,7 +96,7 @@ public class V16 implements Listener, CommandExecutor, TabCompleter {
             if (!text.contains("sent out")) {
                 return;
             }
-            UUID uniqueID = e.target.getUUID();
+            UUID uniqueID = e.target.func_110124_au();
             if (Bukkit.getPlayer(uniqueID) == null) {
                 return;
             }
