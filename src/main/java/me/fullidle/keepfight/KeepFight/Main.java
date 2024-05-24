@@ -16,10 +16,12 @@ public class Main extends JavaPlugin {
     @SneakyThrows
     @Override
     public void onEnable() {
+        SomeData.main = this;
+
         saveDefaultConfig();
         SomeData.help = getConfig().getStringList("msg.help").toArray(new String[0]);
 
-        Listener versionO = null;
+        Listener versionO;
         String version = SomeMethod.getMinecraftVersion();
         if (version.equals("1.12.2")){
             versionO = new V12();

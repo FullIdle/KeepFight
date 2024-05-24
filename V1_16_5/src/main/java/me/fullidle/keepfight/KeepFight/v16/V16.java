@@ -40,42 +40,34 @@ public class V16 implements Listener, CommandExecutor, TabCompleter {
             return false;
         }
         PlayerParticipant pp = battle.getPlayer(fp);
-        if (args.length < 1){
-            rs(pp);
-            return false;
-        }
         if (pp.bc.hasSpectator(pp.player)) {
-            pp.bc.sendToPlayer(pp.player,"§c你非参与者");
+            pp.bc.sendToPlayer(pp.player,"§cYou are not a participant");
             return false;
         }
-        switch (args[0]){
-            case "rs":
-            case "reselect":{
-                rs(pp);
-                break;
-            }
-            case "eb":
-            case "emptyBlood":{
-                PixelmonWrapper wrapper = pp.controlledPokemon.get(0);
-                if (wrapper.getHealth() != 0){
-                    battle.sendToPlayer(fp,"§cYour Pokémon is not dead!");
-                    break;
-                }
-                wrapper.pokemon.setHealth(1);
-                waitDiedPoke.put(player.getUniqueId(),wrapper.pokemon);
-                pp.sendMessage(new BattleSwitchPacket());
-                break;
-            }
+        //
+        ArrayList<UUID> uuids = new ArrayList<>();
+        ArrayList<Boolean> booleans = new ArrayList<>();
+        for (PixelmonWrapper wrapper : pp.allPokemon) {
+            uuids.add(wrapper.getPokemonUUID());
+            booleans.add(wrapper.isAlive());
         }
-        return false;
-    }
-
-    public static void rs(PlayerParticipant pp){
         BackToMainMenuPacket message = new BackToMainMenuPacket(
-                Arrays.stream(pp.allPokemon).map(pw->(pw.isAlive() && pw.entity == null)).collect(Collectors.toList()), true,
-                Arrays.stream(pp.allPokemon).map(PixelmonWrapper::getPokemonUUID).collect(Collectors.toList()));
+                booleans,
+                true,
+                uuids);
         pp.sendMessage(message);
-        pp.bc.sendToPlayer(pp.player,"§a对战续命成功,有没有效果得自己试");
+        pp.bc.sendToPlayer(pp.player,SomeData.main.getConfig().
+                getString("msg.KeepFightCmdMsg").replace('&','§'));
+
+
+        PixelmonWrapper wrapper = pp.controlledPokemon.get(0);
+        if (wrapper.getHealth() != 0){
+            return false;
+        }
+        wrapper.pokemon.setHealth(1);
+        waitDiedPoke.put(pp.player.func_110124_au(),wrapper.pokemon);
+        pp.sendMessage(new BattleSwitchPacket());
+        return false;
     }
 
 
