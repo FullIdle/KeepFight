@@ -5,6 +5,7 @@ import me.fullidle.ficore.ficore.common.SomeMethod;
 import me.fullidle.keepfight.KeepFight.common.SomeData;
 import me.fullidle.keepfight.KeepFight.v12.V12;
 import me.fullidle.keepfight.KeepFight.v16.V16;
+import me.fullidle.keepfight.KeepFight.v20.V20;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
@@ -23,15 +24,17 @@ public class Main extends JavaPlugin {
 
         Listener versionO;
         String version = SomeMethod.getMinecraftVersion();
-        if (version.equals("1.12.2")){
+        if (version.equals("1.12.2")) {
             versionO = new V12();
         } else if (version.equals("1.16.5")) {
             versionO = new V16();
-        }else {
+        } else if (version.equals("1.20.2")) {
+            versionO = new V20();
+        } else {
             BukkitRunnable runnable = new BukkitRunnable() {
                 @Override
                 public void run() {
-                    Main.this.getLogger().info("§cThis plugin does not support servers with version §6"+version);
+                    Main.this.getLogger().info("§cThis plugin does not support servers with version §6" + version);
                     getServer().getPluginManager().disablePlugin(Main.this);
                 }
             };
@@ -39,10 +42,9 @@ public class Main extends JavaPlugin {
             return;
         }
 
-        getServer().getPluginManager().registerEvents(versionO,this);
+        getServer().getPluginManager().registerEvents(versionO, this);
         PluginCommand command = getCommand("keepfight");
         command.setExecutor((CommandExecutor) versionO);
-        command.setTabCompleter((TabCompleter) versionO);
         getLogger().info("Plugin is enabled!");
     }
 }

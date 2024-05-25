@@ -22,7 +22,7 @@ import org.bukkit.event.Listener;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class V16 implements Listener, CommandExecutor, TabCompleter {
+public class V16 implements Listener, CommandExecutor {
     public static Map<UUID,Pokemon> waitDiedPoke = new HashMap<>();
 
     @SneakyThrows
@@ -68,14 +68,6 @@ public class V16 implements Listener, CommandExecutor, TabCompleter {
         waitDiedPoke.put(pp.player.func_110124_au(),wrapper.pokemon);
         pp.sendMessage(new BattleSwitchPacket());
         return false;
-    }
-
-
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length < 1) return SomeData.subCmd;
-        if (args.length == 1) return SomeData.subCmd.stream().filter(s->s.startsWith(args[0])).collect(Collectors.toList());
-        return null;
     }
 
     @EventHandler

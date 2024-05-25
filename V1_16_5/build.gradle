@@ -11,16 +11,3 @@ dependencies {
     compileOnly 'com.pixelmonmod.pixelmon:Pixelmon:1.16.5-9.1.9'
     implementation project(path:':common')
 }
-
-test {
-    useJUnitPlatform()
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = "UTF-8"
-}
-
-processResources {
-    setFilteringCharset("UTF-8")
-    expand project.properties
-}

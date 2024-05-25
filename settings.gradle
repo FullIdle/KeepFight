@@ -2,3 +2,5 @@ rootProject.name = 'KeepFight'
 include 'V1_12_2'
 include 'V1_16_5'
 include 'common'
+include 'V1_20_2'
+

@@ -1,18 +1,18 @@
-package me.fullidle.keepfight.KeepFight.v12;
+package me.fullidle.keepfight.KeepFight.v20;
 
-import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleMessageEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
-import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
+import com.pixelmonmod.pixelmon.battles.controller.BattleController;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
-import com.pixelmonmod.pixelmon.comm.packetHandlers.battles.BackToMainMenu;
-import com.pixelmonmod.pixelmon.comm.packetHandlers.battles.BattleSwitch;
+import com.pixelmonmod.pixelmon.comm.packetHandlers.battles.BackToMainMenuPacket;
+import com.pixelmonmod.pixelmon.comm.packetHandlers.battles.BattleSwitchPacket;
 import lombok.SneakyThrows;
 import me.fullidle.ficore.ficore.common.api.event.ForgeEvent;
 import me.fullidle.keepfight.KeepFight.common.SomeData;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,7 +25,7 @@ import org.bukkit.event.Listener;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class V12 implements Listener, CommandExecutor {
+public class V20 implements Listener, CommandExecutor {
     public static Map<UUID,Pokemon> waitDiedPoke = new HashMap<>();
 
     @SneakyThrows
@@ -36,8 +36,8 @@ public class V12 implements Listener, CommandExecutor {
             return false;
         }
         Player player = (Player) sender;
-        EntityPlayerMP fp = Pixelmon.storageManager.getParty(player.getUniqueId()).getPlayer();
-        BattleControllerBase battle = BattleRegistry.getBattle(fp);
+        ServerPlayer fp = StorageProxy.getPartyNow(player.getUniqueId()).getPlayer();
+        BattleController battle = BattleRegistry.getBattle(fp);
         if (battle == null){
             sender.sendMessage("§cNot battle!");
             return false;
@@ -48,18 +48,28 @@ public class V12 implements Listener, CommandExecutor {
             return false;
         }
         //
-        BackToMainMenu message = new BackToMainMenu(true,true,new ArrayList<>(Arrays.asList(pp.allPokemon)));
+        ArrayList<UUID> uuids = new ArrayList<>();
+        ArrayList<Boolean> booleans = new ArrayList<>();
+        for (PixelmonWrapper wrapper : pp.allPokemon) {
+            uuids.add(wrapper.getPokemonUUID());
+            booleans.add(wrapper.isAlive());
+        }
+        BackToMainMenuPacket message = new BackToMainMenuPacket(
+                booleans,
+                true,
+                uuids);
         pp.sendMessage(message);
         pp.bc.sendToPlayer(pp.player,SomeData.main.getConfig().
                 getString("msg.KeepFightCmdMsg").replace('&','§'));
+
 
         PixelmonWrapper wrapper = pp.controlledPokemon.get(0);
         if (wrapper.getHealth() != 0){
             return false;
         }
         wrapper.pokemon.setHealth(1);
-        waitDiedPoke.put(pp.player.func_110124_au(),wrapper.pokemon);
-        pp.sendMessage(new BattleSwitch());
+        waitDiedPoke.put(pp.player.getBukkitEntity().getUniqueId(),wrapper.pokemon);
+        pp.sendMessage(new BattleSwitchPacket());
         return false;
     }
 
@@ -67,11 +77,11 @@ public class V12 implements Listener, CommandExecutor {
     public void onForge(ForgeEvent event){
         if (event.getForgeEvent() instanceof BattleMessageEvent) {
             BattleMessageEvent e = (BattleMessageEvent) event.getForgeEvent();
-            String text = e.textComponent.func_150261_e();
+            String text = e.component.getString();
             if (!text.contains("sent out")) {
                 return;
             }
-            UUID uniqueID = e.target.func_110124_au();
+            UUID uniqueID = e.target.m_20148_();
             if (Bukkit.getPlayer(uniqueID) == null) {
                 return;
             }
