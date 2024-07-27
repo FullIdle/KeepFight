@@ -29,6 +29,19 @@ allprojects {
         compileOnly 'org.projectlombok:lombok:1.18.28'
         annotationProcessor 'org.projectlombok:lombok:1.18.28'
     }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+
+    processResources {
+        setFilteringCharset("UTF-8")
+        expand project.properties
+    }
 }
 
 repositories {
@@ -42,19 +55,6 @@ dependencies {
     implementation project(path: ':V1_12_2')
     implementation project(path: ':V1_16_5')
     implementation project(path: ':V1_20_2')
-}
-
-test {
-    useJUnitPlatform()
-}
-
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
-}
-
-processResources {
-    setFilteringCharset("UTF-8")
-    expand project.properties
 }
 
 shadowJar {
