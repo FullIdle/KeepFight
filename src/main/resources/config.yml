@@ -3,4 +3,4 @@ msg:
     - 'help 你猜'
     - 'rs,reselect 卡稍等时用!(抓精灵除外)'
     - 'eb,emptyBlood 空血卡时用'
-  KeepFightCmdMsg: '&3已尝试智能续战[效果有没有不知道只知道有人说能解决95%的卡战斗]'
+  KeepFightCmdMsg: '&3已尝试智能续战[大概能决决95%的卡战斗]'
