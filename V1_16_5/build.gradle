@@ -4,6 +4,10 @@ version = rootProject.version
 repositories {
     mavenCentral()
     mavenLocal()
+    maven {
+        allowInsecureProtocol = true
+        url "http://server.pokemtd.top:31647/snapshots"
+    }
 }
 
 dependencies {

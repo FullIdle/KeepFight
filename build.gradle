@@ -17,7 +17,10 @@ allprojects {
     repositories {
         mavenCentral()
         mavenLocal()
-        maven { url 'https://raw.github.com/FullIdle/maven-repository/main/' }
+        maven {
+            allowInsecureProtocol = true
+            url "http://server.pokemtd.top:31647/snapshots"
+        }
     }
     dependencies {
         compileOnly 'me.fullidle.ficore:FICore:1.2.6'
@@ -47,8 +50,10 @@ allprojects {
 repositories {
     mavenCentral()
     mavenLocal()
-    maven { url 'https://raw.github.com/FullIdle/maven-repository/main/' }
-}
+    maven {
+        allowInsecureProtocol = true
+        url "http://server.pokemtd.top:31647/snapshots"
+    }}
 
 dependencies {
     implementation project(path: ':common')

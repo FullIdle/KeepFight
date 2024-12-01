@@ -4,8 +4,10 @@ version = rootProject.version
 repositories {
     mavenCentral()
     mavenLocal()
-    maven {url 'https://raw.github.com/FullIdle/maven-repository/main/'}
-}
+    maven {
+        allowInsecureProtocol = true
+        url "http://server.pokemtd.top:31647/snapshots"
+    }}
 
 dependencies {
     compileOnly 'me.forge.forgedev:ForgeDev:1.12.2'
