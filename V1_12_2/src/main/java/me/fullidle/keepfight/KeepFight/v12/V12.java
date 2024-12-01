@@ -1,7 +1,11 @@
 package me.fullidle.keepfight.KeepFight.v12;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
+import com.pixelmonmod.pixelmon.api.events.battles.AttackEvent;
+import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleMessageEvent;
+import com.pixelmonmod.pixelmon.api.events.battles.UseBattleItemEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
@@ -11,6 +15,7 @@ import com.pixelmonmod.pixelmon.comm.packetHandlers.battles.BackToMainMenu;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.battles.BattleSwitch;
 import lombok.SneakyThrows;
 import me.fullidle.ficore.ficore.common.api.event.ForgeEvent;
+import me.fullidle.keepfight.KeepFight.common.CommonUtil;
 import me.fullidle.keepfight.KeepFight.common.SomeData;
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.bukkit.Bukkit;
@@ -81,6 +86,38 @@ public class V12 implements Listener, CommandExecutor {
                     pokemon.setHealth(0);
                 }
             },1);
+            return;
+        }
+
+        if (event.getForgeEvent() instanceof BattleStartedEvent) {
+            if (SomeData.main.getConfig().getBoolean("battleTitleTips.enable"))
+                for (PlayerParticipant player : ((BattleStartedEvent) event.getForgeEvent()).bc.getPlayers())
+                    CommonUtil.resetTitleTipsTick(Bukkit.getPlayer(player.player.func_110124_au()));
+            return;
+        }
+
+        if (event.getForgeEvent() instanceof BattleEndEvent) {
+            for (PlayerParticipant player : ((BattleEndEvent) event.getForgeEvent()).bc.getPlayers())
+                CommonUtil.removeTitleTips(Bukkit.getPlayer(player.player.func_110124_au()));
+            return;
+        }
+
+        if (event.getForgeEvent() instanceof AttackEvent.Use) {
+            if (SomeData.main.getConfig().getBoolean("battleTitleTips.enable")) {
+                AttackEvent.Use e = (AttackEvent.Use) event.getForgeEvent();
+                if (e.user.getParticipant() instanceof PlayerParticipant)
+                    CommonUtil.resetTitleTipsTick(Bukkit.getPlayer(((PlayerParticipant) e.user.getParticipant()).player.func_110124_au()));
+            }
+            return;
+        }
+
+        if (event.getForgeEvent() instanceof UseBattleItemEvent) {
+            if (SomeData.main.getConfig().getBoolean("battleTitleTips.enable")) {
+                UseBattleItemEvent e = (UseBattleItemEvent) event.getForgeEvent();
+                if (e.participant instanceof PlayerParticipant)
+                    CommonUtil.resetTitleTipsTick(Bukkit.getPlayer(((PlayerParticipant) e.participant).player.func_110124_au()));
+            }
+            return;
         }
     }
 }

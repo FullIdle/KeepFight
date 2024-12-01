@@ -4,3 +4,8 @@ msg:
     - 'rs,reselect 卡稍等时用!(抓精灵除外)'
     - 'eb,emptyBlood 空血卡时用'
   KeepFightCmdMsg: "&3已尝试智能续战&7(通常解决百分之80的问题)"
+battleTitleTips:
+  enable: true
+  ##多久在操作未操作就提示 #单位 tick (1s = 20tick) 400 = 20秒
+  time: 400
+  tips: "&3检测你长时间未动,如果卡战斗了可以尝试使用/kf"
