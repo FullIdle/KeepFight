@@ -5,6 +5,7 @@ import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.BattleController;
+import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.battles.BackToMainMenuPacket;
@@ -108,9 +109,16 @@ public class V16 implements Listener, CommandExecutor {
         if (event.getForgeEvent() instanceof AttackEvent.Use) {
             if (SomeData.main.getConfig().getBoolean("battleTitleTips.enable")) {
                 AttackEvent.Use e = (AttackEvent.Use) event.getForgeEvent();
-                if (e.user.getParticipant() instanceof PlayerParticipant)
-                    CommonUtil.resetTitleTipsTick(Bukkit.getPlayer(((PlayerParticipant) e.user.getParticipant()).player.func_110124_au()));
+                BattleParticipant participant = e.user.getParticipant();
+                if (participant instanceof PlayerParticipant)
+                    CommonUtil.resetTitleTipsTick(Bukkit.getPlayer(((PlayerParticipant) participant).player.func_110124_au()));
             }
+            return;
+        }
+
+        if (event.getForgeEvent() instanceof TurnEndEvent) {
+            for (PlayerParticipant player : ((TurnEndEvent) event.getForgeEvent()).getBattleController().getPlayers())
+                CommonUtil.resetTitleTipsTick(Bukkit.getPlayer(player.player.func_110124_au()));
             return;
         }
 
