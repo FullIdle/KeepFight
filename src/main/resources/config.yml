@@ -8,4 +8,9 @@ battleTitleTips:
   enable: true
   ##多久在操作未操作就提示 #单位 tick (1s = 20tick) 400 = 20秒
   time: 400
-  tips: "&3检测你长时间未动,如果卡战斗了可以尝试使用/kf"
+  actions:
+    - 'title: &3检测你长时间未动,如果卡战斗了可以尝试使用/kf'
+    - 'command: say &3检测你长时间未动,如果卡战斗了可以尝试使用/kf'
+    - 'console: say &3检测你长时间未动,如果卡战斗了可以尝试使用/kf'
+    ##
+    # - 'op: 指令' 不建议用

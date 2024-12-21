@@ -1,5 +1,6 @@
 package me.fullidle.keepfight.KeepFight.common;
 
+import me.fullidle.keepfight.KeepFight.common.actions.IAction;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -7,12 +8,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class CommonUtil {
     public static void resetTitleTipsTick(Player player) {
         FileConfiguration config = SomeData.main.getConfig();
-        String msg = config.getString("battleTitleTips.tips");
         BukkitRunnable br = new BukkitRunnable() {
             @Override
             public void run() {
                 if (player.isOnline()) {
-                    player.sendTitle(msg.replace('&', '§'), "", 7, 300, 7);
+                    for (IAction action : SomeData.actions) {
+                        action.execute(player);
+                    }
                 }
             }
         };
