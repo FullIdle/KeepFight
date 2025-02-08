@@ -1,5 +1,6 @@
 package me.fullidle.keepfight.KeepFight.v16;
 
+import com.pixelmonmod.pixelmon.api.command.PixelmonCommandUtils;
 import com.pixelmonmod.pixelmon.api.events.battles.*;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
@@ -14,17 +15,15 @@ import lombok.SneakyThrows;
 import me.fullidle.ficore.ficore.common.api.event.ForgeEvent;
 import me.fullidle.keepfight.KeepFight.common.CommonUtil;
 import me.fullidle.keepfight.KeepFight.common.SomeData;
+import me.fullidle.keepfight.KeepFight.common.plugin.KFPlugin;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class V16 implements Listener, CommandExecutor {
+public class V16 extends KFPlugin {
     public static Map<UUID,Pokemon> waitDiedPoke = new HashMap<>();
 
     @SneakyThrows
@@ -72,8 +71,16 @@ public class V16 implements Listener, CommandExecutor {
         return false;
     }
 
-    @EventHandler
-    public void onForge(ForgeEvent event){
+    @Override
+    public boolean playerInBattle(Player player) {
+        ServerPlayerEntity spe = PixelmonCommandUtils.getEntityPlayer(player.getUniqueId());
+        BattleController battle = BattleRegistry.getBattle(spe);
+        if (battle == null) return false;
+        return !battle.hasSpectator(spe);
+    }
+
+    @Override
+    public void forgeEvent(ForgeEvent event) {
         if (event.getForgeEvent() instanceof BattleMessageEvent) {
             BattleMessageEvent e = (BattleMessageEvent) event.getForgeEvent();
             String text = e.textComponent.getString();
@@ -130,5 +137,15 @@ public class V16 implements Listener, CommandExecutor {
             }
             return;
         }
+    }
+
+    @Override
+    public void reload() {
+
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
+        return null;
     }
 }

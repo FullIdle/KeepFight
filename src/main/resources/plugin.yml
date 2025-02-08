@@ -9,3 +9,6 @@ commands:
   keepfight:
     description: 指令
     aliases: [kf,keepf]
+  kfreload:
+    description: 重载配置
+    aliases: [kfr]

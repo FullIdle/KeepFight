@@ -1,6 +1,7 @@
 package me.fullidle.keepfight.KeepFight.v12;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.command.PixelmonCommand;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.*;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
@@ -15,21 +16,16 @@ import lombok.SneakyThrows;
 import me.fullidle.ficore.ficore.common.api.event.ForgeEvent;
 import me.fullidle.keepfight.KeepFight.common.CommonUtil;
 import me.fullidle.keepfight.KeepFight.common.SomeData;
+import me.fullidle.keepfight.KeepFight.common.plugin.KFPlugin;
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class V12 implements Listener, CommandExecutor {
+public class V12 extends KFPlugin {
     public static Map<UUID,Pokemon> waitDiedPoke = new HashMap<>();
 
     @SneakyThrows
@@ -67,8 +63,16 @@ public class V12 implements Listener, CommandExecutor {
         return false;
     }
 
-    @EventHandler
-    public void onForge(ForgeEvent event){
+    @Override
+    public boolean playerInBattle(Player player) {
+        EntityPlayerMP mp = PixelmonCommand.getEntityPlayer(player.getUniqueId());
+        BattleControllerBase battle = BattleRegistry.getBattle(mp);
+        if (battle == null) return false;
+        return !battle.hasSpectator(mp);
+    }
+
+    @Override
+    public void forgeEvent(ForgeEvent event) {
         if (event.getForgeEvent() instanceof BattleMessageEvent) {
             BattleMessageEvent e = (BattleMessageEvent) event.getForgeEvent();
             String text = e.textComponent.func_150261_e();
@@ -125,5 +129,15 @@ public class V12 implements Listener, CommandExecutor {
             }
             return;
         }
+    }
+
+    @Override
+    public void reload() {
+
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
+        return null;
     }
 }

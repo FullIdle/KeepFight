@@ -2,14 +2,15 @@ package me.fullidle.keepfight.KeepFight;
 
 import lombok.SneakyThrows;
 import me.fullidle.ficore.ficore.common.SomeMethod;
+import me.fullidle.keepfight.KeepFight.common.CommonUtil;
 import me.fullidle.keepfight.KeepFight.common.SomeData;
 import me.fullidle.keepfight.KeepFight.common.actions.*;
+import me.fullidle.keepfight.KeepFight.common.commands.KFReload;
 import me.fullidle.keepfight.KeepFight.v12.V12;
 import me.fullidle.keepfight.KeepFight.v16.V16;
 import me.fullidle.keepfight.KeepFight.v20.V20;
-import org.bukkit.command.CommandExecutor;
+import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -19,21 +20,21 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         SomeData.main = this;
 
-        saveDefaultConfig();
-        SomeData.help = getConfig().getStringList("msg.help").toArray(new String[0]);
-        SomeData.actions = getConfig().getStringList("battleTitleTips.actions").stream().map(Main::parseAction).toArray(IAction[]::new);
+        this.reloadConfig();
 
-        Listener versionO;
+        SomeData.help = getConfig().getStringList("msg.help").toArray(new String[0]);
+        SomeData.actions = getConfig().getStringList("battleTitleTips.actions").stream().map(CommonUtil::parseAction).toArray(IAction[]::new);
+
         String version = SomeMethod.getMinecraftVersion();
         switch (version) {
             case "1.12.2":
-                versionO = new V12();
+                SomeData.kfPlugin = new V12();
                 break;
             case "1.16.5":
-                versionO = new V16();
+                SomeData.kfPlugin = new V16();
                 break;
             case "1.20.2":
-                versionO = new V20();
+                SomeData.kfPlugin = new V20();
                 break;
             default:
                 BukkitRunnable runnable = new BukkitRunnable() {
@@ -47,26 +48,21 @@ public class Main extends JavaPlugin {
                 return;
         }
 
-        getServer().getPluginManager().registerEvents(versionO, this);
+        getServer().getPluginManager().registerEvents(new ForgeListener(), this);
         PluginCommand command = getCommand("keepfight");
-        command.setExecutor((CommandExecutor) versionO);
+        command.setExecutor(SomeData.kfPlugin);
+        getCommand("kfreload").setExecutor(KFReload.INSTANCE);
         getLogger().info("Plugin is enabled!");
     }
 
-    public static IAction parseAction(String actionText){
-        actionText = actionText.replace('&','§');
-        if (actionText.startsWith("op: ")) {
-            return new OpAction(actionText.substring(4));
-        }
-        if (actionText.startsWith("console: ")) {
-            return new ConsoleAction(actionText.substring(9));
-        }
-        if (actionText.startsWith("command: ")) {
-            return new CommandAction(actionText.substring(9));
-        }
-        if (actionText.startsWith("title: ")) {
-            return new TitleAction(actionText.substring(7));
-        }
-        return null;
+    @Override
+    public void reloadConfig() {
+        this.saveDefaultConfig();
+        super.reloadConfig();
+
+        Bukkit.getScheduler().cancelTasks(this);
+        SomeData.titleTipsDelay.clear();
+
+        SomeData.kfPlugin.reload();
     }
 }

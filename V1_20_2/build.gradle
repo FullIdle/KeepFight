@@ -5,6 +5,10 @@ repositories {
     mavenCentral()
     mavenLocal()
     maven { url "https://maven.mohistmc.com/" }
+    maven {
+        allowInsecureProtocol = true
+        url "http://server.pokemtd.top:31647/snapshots"
+    }
 }
 
 dependencies {
