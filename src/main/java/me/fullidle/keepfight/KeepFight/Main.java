@@ -20,11 +20,6 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         SomeData.main = this;
 
-        this.reloadConfig();
-
-        SomeData.help = getConfig().getStringList("msg.help").toArray(new String[0]);
-        SomeData.actions = getConfig().getStringList("battleTitleTips.actions").stream().map(CommonUtil::parseAction).toArray(IAction[]::new);
-
         String version = SomeMethod.getMinecraftVersion();
         switch (version) {
             case "1.12.2":
@@ -47,6 +42,11 @@ public class Main extends JavaPlugin {
                 runnable.run();
                 return;
         }
+
+        this.reloadConfig();
+
+        SomeData.help = getConfig().getStringList("msg.help").toArray(new String[0]);
+        SomeData.actions = getConfig().getStringList("battleTitleTips.actions").stream().map(CommonUtil::parseAction).toArray(IAction[]::new);
 
         getServer().getPluginManager().registerEvents(new ForgeListener(), this);
         PluginCommand command = getCommand("keepfight");
