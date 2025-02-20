@@ -1,8 +1,7 @@
 msg:
   help:
     - 'help 你猜'
-    - 'rs,reselect 卡稍等时用!(抓精灵除外)'
-    - 'eb,emptyBlood 空血卡时用'
+    - 'kf 只有一个命令'
   KeepFightCmdMsg: "&3已尝试智能续战&7(通常解决百分之80的问题)"
 battleTitleTips:
   enable: true
