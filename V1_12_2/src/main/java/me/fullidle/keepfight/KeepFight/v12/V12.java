@@ -10,8 +10,11 @@ import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
+import com.pixelmonmod.pixelmon.battles.controller.participants.TrainerParticipant;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.battles.BackToMainMenu;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.battles.BattleSwitch;
+import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
+import com.pixelmonmod.pixelmon.enums.battle.EnumBattleEndCause;
 import lombok.SneakyThrows;
 import me.fullidle.ficore.ficore.common.api.event.ForgeEvent;
 import me.fullidle.keepfight.KeepFight.common.CommonUtil;
@@ -47,6 +50,23 @@ public class V12 extends KFPlugin {
             pp.bc.sendToPlayer(pp.player,"§cYou are not a participant");
             return false;
         }
+        ArrayList<BattleParticipant> our;
+        for (BattleParticipant bp : pp.bc.participants) {
+            for (PixelmonWrapper wrapper : bp.allPokemon) {
+                if (wrapper.getHealth() <= 0) {
+                    //我方不只我一人
+                    if ((our = pp.getOpponents().get(0).getOpponents()).size() > 1) {
+                        our.removeIf(p->p instanceof TrainerParticipant);
+                        //我方只有我或者除了我都是npc的时候
+                        if (our.size() <= 1) {
+                            pp.bc.endBattle();
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
         //
         BackToMainMenu message = new BackToMainMenu(true,true,new ArrayList<>(Arrays.asList(pp.allPokemon)));
         pp.sendMessage(message);
@@ -57,7 +77,8 @@ public class V12 extends KFPlugin {
         if (wrapper.getHealth() != 0){
             return false;
         }
-        wrapper.pokemon.setHealth(1);
+        wrapper.setHealth(1);
+        Bukkit.getScheduler().runTask(SomeData.main,()-> wrapper.setHealth(0));
         waitDiedPoke.put(pp.player.func_110124_au(),wrapper.pokemon);
         pp.sendMessage(new BattleSwitch());
         return false;
