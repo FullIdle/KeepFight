@@ -1,6 +1,7 @@
 package me.fullidle.keepfight.KeepFight.common.actions;
 
 import lombok.Getter;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -14,6 +15,6 @@ public class ConsoleAction implements IAction{
 
     @Override
     public void execute(Player player) {
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),value);
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), PlaceholderAPI.setPlaceholders(player,value));
     }
 }

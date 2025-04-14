@@ -1,6 +1,7 @@
 package me.fullidle.keepfight.KeepFight.common.actions;
 
 import lombok.Getter;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -18,7 +19,7 @@ public class OpAction implements IAction {
         boolean op = player.isOp();
         try {
             player.setOp(true);
-            Bukkit.dispatchCommand(player,value);
+            Bukkit.dispatchCommand(player, PlaceholderAPI.setPlaceholders(player,value));
             player.setOp(op);
         } catch (Exception e) {
             throw new RuntimeException(e);

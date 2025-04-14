@@ -1,6 +1,7 @@
 package me.fullidle.keepfight.KeepFight.common.actions;
 
 import lombok.Getter;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
 
 @Getter
@@ -13,6 +14,6 @@ public class TitleAction implements IAction {
 
     @Override
     public void execute(Player player) {
-        player.sendTitle(value, "", 7, 300, 7);
+        player.sendTitle(PlaceholderAPI.setPlaceholders(player,value), "", 7, 300, 7);
     }
 }
