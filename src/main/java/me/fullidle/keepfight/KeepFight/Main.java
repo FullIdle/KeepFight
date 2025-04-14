@@ -45,9 +45,6 @@ public class Main extends JavaPlugin {
 
         this.reloadConfig();
 
-        SomeData.help = getConfig().getStringList("msg.help").toArray(new String[0]);
-        SomeData.actions = getConfig().getStringList("battleTitleTips.actions").stream().map(CommonUtil::parseAction).toArray(IAction[]::new);
-
         getServer().getPluginManager().registerEvents(new ForgeListener(), this);
         PluginCommand command = getCommand("keepfight");
         command.setExecutor(SomeData.kfPlugin);
@@ -64,5 +61,8 @@ public class Main extends JavaPlugin {
         SomeData.titleTipsDelay.clear();
 
         SomeData.kfPlugin.reload();
+
+        SomeData.help = getConfig().getStringList("msg.help").toArray(new String[0]);
+        SomeData.actions = getConfig().getStringList("battleTitleTips.actions").stream().map(CommonUtil::parseAction).toArray(IAction[]::new);
     }
 }
